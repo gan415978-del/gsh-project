@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Сообщения - GSH</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <a href="index.html" class="logo">GSH</a>
+        <button
+          class="btn-back-header"
+          id="btn-back-header"
+          style="display: none"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="header-actions">
+          <div class="search-wrapper" id="search-wrapper">
+            <input
+              type="text"
+              class="search-input-dynamic"
+              id="header-search-input"
+              placeholder="Поиск..."
+            />
+            <button class="search-btn-icon" id="search-trigger">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <div
+            id="auth-container"
+            style="display: flex; align-items: center; gap: 15px"
+          ></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <aside class="sidebar-left">
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-item"
+            ><i class="fa-solid fa-fire"></i> Популярное</a
+          >
+          <a href="fresh.html" class="nav-item"
+            ><i class="fa-regular fa-clock"></i> Свежее</a
+          >
+          <a href="feed.html" class="nav-item"
+            ><i class="fa-regular fa-bookmark"></i> Моя лента</a
+          >
+          <a href="messages.html" class="nav-item"
+            ><i class="fa-regular fa-comments"></i> Сообщения</a
+          >
+          <a href="rating.html" class="nav-item"
+            ><i class="fa-solid fa-chart-simple"></i> Рейтинг</a
+          >
+        </nav>
+        <div class="nav-divider"></div>
+        <div class="nav-topics">
+          <div class="topics-header">
+            Темы
+            <span
+              id="admin-add-topic-btn"
+              style="
+                float: right;
+                cursor: pointer;
+                display: none;
+                color: #4683d9;
+              "
+              ><i class="fa-solid fa-plus"></i
+            ></span>
+          </div>
+          <div id="topics-list-sidebar"></div>
+        </div>
+      </aside>
+
+      <main class="content-feed">
+        <div class="feed-header"><h3>Сообщения</h3></div>
+        <div id="conversations-list"></div>
+      </main>
+
+      <aside class="sidebar-right">
+        <div class="top-blogs-card">
+          <h3>Топ Авторов</h3>
+          <ul class="blog-list" id="top-authors-list">
+            <div style="padding: 10px; color: #666; font-size: 13px">
+              Загрузка...
+            </div>
+          </ul>
+          <a href="rating.html" class="view-all">Посмотреть весь рейтинг</a>
+        </div>
+
+        <div class="footer-links">
+          <div class="copyright">© GSH 2025</div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="topic-modal" class="modal-overlay">
+      <div class="modal-window">
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+        <h2 class="auth-title" id="topic-modal-title">Настройки темы</h2>
+        <div class="input-group">
+          <input
+            type="text"
+            id="topic-name-input"
+            placeholder="Название"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="text"
+            id="topic-desc-input"
+            placeholder="Описание"
+            required
+          />
+        </div>
+        <div
+          style="
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <button
+            class="btn-action"
+            id="btn-save-topic"
+            style="width: auto; padding: 10px 20px"
+          >
+            Сохранить
+          </button>
+          <button
+            id="btn-admin-delete-topic"
+            style="
+              background: transparent;
+              border: none;
+              color: #ff5e5e;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            Удалить тему
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal-window">
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+
+        <div class="auth-screen active" id="screen-start">
+          <div class="auth-logo">GSH</div>
+          <h2 class="auth-title">Вход в аккаунт</h2>
+          <div class="auth-buttons">
+            <button class="btn-social">
+              <i class="fa-brands fa-google"></i> Google
+            </button>
+            <button class="btn-social" id="btn-to-email">
+              <i class="fa-regular fa-envelope"></i> Почта
+            </button>
+          </div>
+          <div class="auth-footer-link">
+            Нет аккаунта? <span id="link-to-reg">Регистрация</span>
+          </div>
+        </div>
+
+        <form class="auth-screen" id="screen-login">
+          <button
+            type="button"
+            class="btn-back"
+            onclick="document.getElementById('screen-login').classList.remove('active'); document.getElementById('screen-start').classList.add('active');"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <h2 class="auth-title">Вход</h2>
+          <div class="input-group">
+            <input type="email" id="login-email" placeholder="Email" required />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Пароль"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-action">Войти</button>
+          <div class="form-message" id="msg-login"></div>
+        </form>
+
+        <form class="auth-screen" id="screen-register">
+          <button
+            type="button"
+            class="btn-back"
+            onclick="document.getElementById('screen-register').classList.remove('active'); document.getElementById('screen-start').classList.add('active');"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <h2 class="auth-title">Регистрация</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              id="reg-name"
+              placeholder="Имя пользователя"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input type="email" id="reg-email" placeholder="Email" required />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              id="reg-password"
+              placeholder="Пароль"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-action">Создать аккаунт</button>
+          <div class="form-message" id="msg-register"></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="post-editor-modal" class="modal-overlay">
+      <div class="editor-window">
+        <div class="editor-header">
+          <div class="editor-user-info">
+            <div class="editor-meta">
+              <div class="editor-author" id="editor-user-name">User</div>
+              <div class="editor-topic-selector" id="topic-trigger">
+                <span id="selected-topic-name">Без темы</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="topic-dropdown" id="topic-dropdown">
+                <div class="topic-option" data-id="1">Скриншоты</div>
+                <div class="topic-option" data-id="2">Гайды</div>
+                <div class="topic-option" data-id="3">Фоторежим</div>
+                <div class="topic-option" data-id="4">Железо</div>
+              </div>
+            </div>
+          </div>
+          <button class="icon-btn close-editor">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="editor-body">
+          <input
+            type="text"
+            class="editor-title-input"
+            id="post-title"
+            placeholder="Заголовок"
+          />
+
+          <div class="editor-image-section">
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              multiple
+              style="display: none"
+            />
+            <div
+              id="images-preview-container"
+              class="images-preview-grid"
+            ></div>
+            <div id="upload-placeholder" class="upload-placeholder">
+              <i class="fa-regular fa-image"></i>
+              <span>Загрузить до 15 скриншотов</span>
+              <div style="font-size: 12px; color: #888; margin-top: 5px">
+                <span id="images-counter">0/15</span>
+              </div>
+            </div>
+          </div>
+
+          <textarea
+            class="editor-content-input"
+            id="post-content"
+            placeholder="Комментарий..."
+          ></textarea>
+        </div>
+
+        <div class="editor-footer">
+          <div class="editor-footer-left">
+            <button class="btn-publish" id="btn-publish-post">
+              Опубликовать
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="chat-modal" class="modal-overlay">
+      <div class="editor-window" style="height: 500px">
+        <div class="editor-header">
+          <div class="editor-author" id="chat-partner-name"></div>
+          <button class="icon-btn close-chat">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="chat-body" id="chat-messages-area"></div>
+        <div class="editor-footer">
+          <div class="chat-input-wrapper">
+            <input
+              type="text"
+              class="chat-input-field"
+              id="chat-input"
+              placeholder="Сообщение..."
+            /><button class="btn-send" id="btn-send-message">
+              <i class="fa-regular fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="post-viewer-modal" class="post-viewer-modal">
+      <div class="viewer-content">
+        <div class="viewer-main">
+          <div class="viewer-image-container" id="viewer-post-image-box">
+            <img src="" id="viewer-post-image" />
+          </div>
+          <div class="viewer-text">
+            <h2 id="viewer-post-title" style="margin-bottom: 15px">
+              Заголовок
+            </h2>
+            <div id="viewer-post-content">Текст поста...</div>
+          </div>
+        </div>
+
+        <div class="viewer-sidebar">
+          <div class="viewer-header">
+            <div class="viewer-author">
+              <img
+                src=""
+                id="viewer-author-avatar"
+                style="width: 30px; height: 30px; border-radius: 50%"
+              />
+              <span id="viewer-author-name">Имя</span>
+            </div>
+            <button class="viewer-close-btn" id="btn-close-viewer">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div
+            style="
+              padding: 15px;
+              border-bottom: 1px solid #2c2c2c;
+              display: flex;
+              gap: 10px;
+            "
+          >
+            <div class="reaction-pill" id="viewer-like-btn">
+              <i class="fa-regular fa-heart"></i>
+              <span id="viewer-likes-count">0</span>
+            </div>
+            <div class="reaction-pill">
+              <i class="fa-regular fa-eye"></i>
+              <span id="viewer-views-count">0</span>
+            </div>
+          </div>
+
+          <div class="viewer-comments-list" id="viewer-comments-list"></div>
+
+          <div class="viewer-footer">
+            <div class="viewer-input-wrapper">
+              <input
+                type="text"
+                class="viewer-input"
+                id="viewer-comment-input"
+                placeholder="Написать комментарий..."
+              />
+              <button class="btn-send" id="btn-send-comment">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal-window" style="max-width: 360px">
+        <h3 class="modal-title">Удаление</h3>
+        <p class="modal-text">
+          Вы уверены, что хотите удалить этот пост? Это действие нельзя
+          отменить.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-modal btn-cancel" id="btn-cancel-delete">
+            Отмена
+          </button>
+          <button class="btn-modal btn-danger" id="btn-confirm-delete">
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
